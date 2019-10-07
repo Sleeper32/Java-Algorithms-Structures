@@ -1,3 +1,5 @@
+import Deque.Deque;
+import Deque.DequeImpl;
 import PriorityQueue.PriorityQueueImpl;
 import Queue.QueueImpl;
 import Stack.Stack;
@@ -73,6 +75,8 @@ public class Main {
         System.out.println();
 
         // Reverse string
+        System.out.println("------ Reverse string ------");
+
         InputStreamReader inputStream = new InputStreamReader(System.in);
         BufferedReader bufferedReader = new BufferedReader(inputStream);
 
@@ -83,6 +87,44 @@ public class Main {
             System.out.println(reverseString(inputString));
         }
         while(!inputString.equals(""));
+
+        System.out.println();
+
+        // Deque class test
+        System.out.println("------ Deque ------");
+
+        DequeImpl deque = new DequeImpl(10);
+
+        while (!deque.isFull()) {
+            int item = random.nextInt(10);
+
+            if(item % 2 == 0) {
+                deque.pushHead(item);
+
+                System.out.println("pushHead: " + item);
+            }
+            else {
+                deque.pushTail(item);
+
+                System.out.println("pushTail: " + item);
+            }
+        }
+
+        System.out.println();
+
+        int selector = 1;
+        int item = 0;
+
+        while (!deque.isEmpty()) {
+            if (selector == 1) {
+                System.out.println("popHead: " + deque.popHead());
+            }
+            else {
+                System.out.println("popTail: " + deque.popTail());
+            }
+
+            selector *= -1;
+        }
     }
 
     public static String reverseString(String string) {
