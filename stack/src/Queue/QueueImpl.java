@@ -29,7 +29,7 @@ public class QueueImpl implements Queue {
 
     @Override
     public void insert(int item) {
-        if (items == size-1) {
+        if (tail == size-1) {
             tail = -1;
         }
 

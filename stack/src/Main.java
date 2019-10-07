@@ -31,6 +31,11 @@ public class Main {
 
         QueueImpl queue = new QueueImpl(10);
 
+        queue.insert(5);
+        queue.insert(6);
+        System.out.println(queue.remove());
+        System.out.println(queue.remove());
+
         for (int i = 1; i <= 10; i++) {
             queue.insert(i);
             System.out.println("inserted: " + i);
