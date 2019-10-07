@@ -1,11 +1,16 @@
 import PriorityQueue.PriorityQueueImpl;
 import Queue.QueueImpl;
+import Stack.Stack;
 import Stack.StackImpl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Random;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //  StackImpl class testing
         System.out.println("------ Stack ------");
 
@@ -64,5 +69,35 @@ public class Main {
         while (!priorityQueue.isEmpty()) {
             System.out.println(priorityQueue.remove());
         }
+
+        System.out.println();
+
+        // Reverse string
+        InputStreamReader inputStream = new InputStreamReader(System.in);
+        BufferedReader bufferedReader = new BufferedReader(inputStream);
+
+        String inputString;
+
+        do {
+            inputString = bufferedReader.readLine();
+            System.out.println(reverseString(inputString));
+        }
+        while(!inputString.equals(""));
+    }
+
+    public static String reverseString(String string) {
+        StackImpl chars = new StackImpl(string.length());
+        String revString = "";
+
+        for (int i = 0; i < string.length(); i++) {
+            char ch = string.charAt(i);
+            chars.push(ch);
+        }
+
+        while (!chars.isEmpty()) {
+            revString += (char) chars.pop();
+        }
+
+        return revString;
     }
 }
