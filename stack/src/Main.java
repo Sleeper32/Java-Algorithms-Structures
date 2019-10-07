@@ -1,9 +1,14 @@
+import PriorityQueue.PriorityQueueImpl;
 import Queue.QueueImpl;
 import Stack.StackImpl;
+
+import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
         //  StackImpl class testing
+        System.out.println("------ Stack ------");
+
         StackImpl stack = new StackImpl(10);
 
         stack.push(1);
@@ -19,7 +24,11 @@ public class Main {
             System.out.println(stack.pop());
         }
 
+        System.out.println();
+
         //  Queue class testing
+        System.out.println("------ Queue ------");
+
         QueueImpl queue = new QueueImpl(10);
 
         for (int i = 1; i <= 10; i++) {
@@ -27,8 +36,28 @@ public class Main {
             System.out.println("inserted: " + i);
         }
 
+        System.out.println("peek: " + queue.peek());
+
         while (!queue.isEmpty()) {
             System.out.println(queue.remove());
+        }
+
+        System.out.println();
+
+        // PriorityQueue class testing
+        System.out.println("------ PriorityQueue ------");
+        PriorityQueueImpl priorityQueue = new PriorityQueueImpl(10);
+        Random random = new Random();
+
+        for (int i = 1; i <= 10; i++) {
+            int item = random.nextInt(10);
+
+            priorityQueue.insert(item);
+            System.out.println("inserted: " + item);
+        }
+
+        while (!priorityQueue.isEmpty()) {
+            System.out.println(priorityQueue.remove());
         }
     }
 }
