@@ -3,7 +3,7 @@ package binary_tree;
 public class Node {
     int key;
     int val;
-    int level;
+   // int level;
     Node leftNode;
     Node rightNode;
 

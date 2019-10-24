@@ -3,43 +3,39 @@ package binary_tree;
 public class BinaryTree {
     private Node root;
 
-    public Node getRoot() {
-        return root;
-    }
-
     public void insert(Node node) {
         Node current = root;
 
         if (current == null) {
             root = node;
-            root.level = 1;
             return;
         }
 
-        insert0(root, null, node, root.level);
+        insert0(root, null, node);
     }
 
-    private void insert0(Node curNode, Node prevNode, Node insNode, int curLevel) {
+    private void insert0(Node curNode, Node prevNode, Node insNode) {
         if (curNode == null) {
             if (prevNode.key > insNode.key) {
                 prevNode.leftNode = insNode;
-            }
-            else {
+            } else {
                 prevNode.rightNode = insNode;
             }
-
-            insNode.level = curLevel;
 
             return;
         } else {
             if (curNode.key > insNode.key) {
-                insert0(curNode.leftNode, curNode, insNode, curLevel+1);
-            } else if (curNode.key < insNode.key){
-                insert0(curNode.rightNode, curNode, insNode, curLevel+1);
+                insert0(curNode.leftNode, curNode, insNode);
+            } else if (curNode.key < insNode.key) {
+                insert0(curNode.rightNode, curNode, insNode);
             } else {
                 curNode.val = insNode.val;
             }
         }
+    }
+
+    public void display() {
+        display(root);
     }
 
     public void display(Node node) {
@@ -53,11 +49,15 @@ public class BinaryTree {
     }
 
     public int getLevel() {
-        if (root == null) {
+        return getLevel(this.root);
+    }
+
+    public int getLevel(Node startNode) {
+        if (startNode == null) {
             return 0;
         }
 
-        return getLevel0(root, root.level);
+        return getLevel0(startNode, 0);
     }
 
     private int getLevel0(Node curNode, int curLevel) {
@@ -65,13 +65,20 @@ public class BinaryTree {
             return curLevel;
         }
 
-        int leftLevel =  getLevel0(curNode.leftNode, curNode.level);
-        int rightLevel = getLevel0(curNode.rightNode, curNode.level);
+        int leftLevel = getLevel0(curNode.leftNode, curLevel) + 1;
+        int rightLevel = getLevel0(curNode.rightNode, curLevel) + 1;
 
         return (leftLevel > rightLevel) ? leftLevel : rightLevel;
     }
 
     public boolean isBalanced() {
-        return false;
+        int leftLevel = getLevel(root.leftNode);
+        int rightLevel = getLevel(root.rightNode);
+
+        if (Math.abs(leftLevel - rightLevel) > 1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

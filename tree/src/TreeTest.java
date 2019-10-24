@@ -1,52 +1,39 @@
 import binary_tree.BinaryTree;
 import binary_tree.Node;
 
+import java.util.Random;
+
 public class TreeTest {
+
+    final static int NUM_TREES = 20;
+    final static int MAX_LEVEL_TREE = 6;
+
     public static void main(String[] args) {
-        BinaryTree bt = new BinaryTree();
+        Random random = new Random();
+        BinaryTree[] bt = new BinaryTree[NUM_TREES];
+        int balancedCount = 0;
 
-        bt.insert(new Node(5, 5));
-        System.out.println(bt.getLevel());
-        bt.insert(new Node(3, 3));
-        System.out.println(bt.getLevel());
-        bt.insert(new Node(9, 9));
-        System.out.println(bt.getLevel());
-        bt.insert(new Node(2, 2));
-        System.out.println(bt.getLevel());
-        bt.insert(new Node(4, 4));
-        System.out.println(bt.getLevel());
-        bt.insert(new Node(7, 7));
-        System.out.println(bt.getLevel());
-        bt.insert(new Node(20, 20));
-        System.out.println(bt.getLevel());
-        bt.insert(new Node(1, 1));
-        System.out.println(bt.getLevel());
-        bt.insert(new Node(6, 6));
-        System.out.println(bt.getLevel());
-        bt.insert(new Node(8, 8));
-        System.out.println(bt.getLevel());
-        bt.insert(new Node(15, 15));
-        System.out.println(bt.getLevel());
-        bt.insert(new Node(25, 25));
-        System.out.println(bt.getLevel());
+        for(int i = 0; i < NUM_TREES; i++) {
+            int level = 0;
+            boolean balanced = false;
 
-        bt.display(bt.getRoot());
-        System.out.println(bt.getLevel());
-        System.out.println();
+            bt[i] = new BinaryTree();
+            while (level < MAX_LEVEL_TREE) {
+                int val = 100 - random.nextInt(200);
 
+                bt[i].insert(new Node(val, val));
+                level = bt[i].getLevel();
+            }
 
-        BinaryTree bt2 = new BinaryTree();
+            balanced = bt[i].isBalanced();
+            if (balanced) balancedCount++;
 
-        bt2.insert(new Node(2, 2));
-        System.out.println(bt2.getLevel());
-        bt2.insert(new Node(3, 3));
-        System.out.println(bt2.getLevel());
-        bt2.insert(new Node(4, 4));
-        System.out.println(bt2.getLevel());
-        bt2.insert(new Node(1, 1));
-        System.out.println(bt2.getLevel());
+            System.out.println("three N" + (i + 1) + ":");
+            System.out.println(String.format("level = %d, balanced = %s", level, balanced));
+            bt[i].display();
+            System.out.println();
+        }
 
-        bt2.display(bt2.getRoot());
-        System.out.println(bt2.getLevel());
+        System.out.println(String.format("Balanced trees: %d/%d (%.2f%%)", balancedCount, NUM_TREES, (float)balancedCount/(float)NUM_TREES*100f));
     }
 }
