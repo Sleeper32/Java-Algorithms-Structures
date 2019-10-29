@@ -3,24 +3,38 @@ package graph;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 public class Graph {
+    private int capacity;
     private int size;
+
     private Point[] points;
-    private int count;
     private int[][] linkMatrix;
 
-    public Graph(int size) {
-        this.size = size;
+    private int lengths[];
+    private int paths[];
 
-        points = new Point[size];
-        linkMatrix = new int[size][size];
+    public Graph(int capacity) {
+        this.capacity = capacity;
+        this.size = 0;
+
+        points = new Point[capacity];
+        linkMatrix = new int[capacity][capacity];
     }
 
     public void addPoint(Point point) {
-        point.setKey(count);
-        points[count] = point;
-        count++;
+        point.setKey(size);
+        points[size] = point;
+        size++;
+    }
+
+    public Point getPointByKey(int key) {
+        for (int i = 0; i < size; i++) {
+            if (points[i].getKey() == key) return points[i];
+        }
+
+        return null;
     }
 
     public void addLink(Point p1, Point p2, int length) {
@@ -31,118 +45,77 @@ public class Graph {
         linkMatrix[key2][key1] = length;
     }
 
-    //public Path getMinPath() {
-    public void getMinPath() {
-        Path[] paths = new Path[size];
-        Tree pathTree = new Tree();
+    public void printMinPath() {
+        calcMinPathsAndLengths();
 
-        //Deque<Point> deque = new LinkedList<Point>();
-        Deque<Node> dequeNode = new LinkedList<Node>();
+        Stack<Point> path = new Stack<Point>();
+        int key = size-1;
 
-        //deque.addLast(points[0]);
+        while(key != 0) {
+            path.push(getPointByKey(key));
+            key = paths[key];
+        }
+        path.push(getPointByKey(key));
 
-        Node root = new Node(points[0]);
-        pathTree.setRoot(root);
-        dequeNode.addLast(root);
+        System.out.print("Min path from " + getPointByKey(0) + " to " + getPointByKey(size-1) + ": ");
+        while(!path.empty()) {
+            System.out.print(path.pop() + " ");
+        }
+        System.out.println();
+    }
 
-        //while(!deque.isEmpty()) {
-        while ((!dequeNode.isEmpty())) {
-            //Point pointFrom = deque.peekFirst();
-            //int keyPointFrom = pointFrom.getKey();
+    public void printMinLength() {
+        calcMinPathsAndLengths();
 
-            Node parentNode = dequeNode.peekFirst();
-            int keyPointFrom = parentNode.getPoint().getKey();
+        System.out.println("Min length: " + lengths[size-1]);
+    }
 
-            for (int keyPointTo = keyPointFrom + 1; keyPointTo < size; keyPointTo++) {
-                int length = linkMatrix[keyPointFrom][keyPointTo];
-                if (length > 0) {
-                    Point pointTo = points[keyPointTo];
+    private void calcMinPathsAndLengths() {
+        Deque<Point> deque = new LinkedList<Point>();
+        boolean[] visited = new boolean[size];
 
-             //       deque.addLast(pointTo);
+        paths = new int[size];
+        lengths = new int[size];
+        for (int i = 1; i < size; i++) {
+            lengths[i] = Integer.MAX_VALUE;
+        }
 
-                    Node childNode = new Node(pointTo);
+        deque.addLast(points[0]);
 
-                    dequeNode.addLast(childNode);
-                    pathTree.addNode(parentNode, childNode);
+        int keyPointFrom = 0;
+        int length = 0;
+        int curLength = 0;
+
+        while(!deque.isEmpty()) {
+            keyPointFrom = deque.peekFirst().getKey();
+
+            boolean[] processed = new boolean[size];
+            for (int keyPointTo = 1; keyPointTo < size; keyPointTo++) {
+                int minLength = Integer.MAX_VALUE;
+                int keyMin = 0;
+
+                for (int i = 1; i<size; i++) {
+                    length = linkMatrix[keyPointFrom][i];
+                    if (length > 0 && length < minLength && !processed[i] && !visited[i]) {
+                        minLength = length;
+                        keyMin = i;
+                        processed[i] = true;
+                    }
+                }
+
+                if (!visited[keyMin]) {
+                    deque.addLast(points[keyMin]);
+
+                    curLength = lengths[keyPointFrom] + minLength;
+                    if (curLength < lengths[keyMin]) {
+                        lengths[keyMin] = curLength;
+                        paths[keyMin] = keyPointFrom;
+                    }
                 }
             }
 
-            //Point point = deque.removeFirst();
-            //System.out.println(point);
-
-            dequeNode.removeFirst();
-        }
-
-        //return path;
-        System.out.println();
-        System.out.println("tree:");
-        pathTree.display();
-    }
-}
-
-class Node {
-    private Point point;
-    private Node parent;
-    private LinkedList<Node> chields;
-
-    public Node(Point point) {
-        this.point = point;
-        this.chields = new LinkedList<Node>();
-    }
-
-    public void setParent(Node node) {
-        parent = node;
-    }
-
-    public Point getPoint() {
-        return point;
-    }
-
-    public Node getParent() {
-        return parent;
-    }
-
-    public void addChield(Node node) {
-        chields.add(node);
-    }
-
-    public LinkedList<Node> getChields() {
-        return chields;
-    }
-
-    public String toString() {
-        return String.format("%s", point);
-    }
-}
-
-class Tree {
-    private Node root;
-
-    public Tree() {
-        root = null;
-    }
-
-    public void setRoot(Node node) {
-        root = node;
-    }
-
-    public void addNode(Node parent, Node child) {
-        child.setParent(parent);
-        parent.addChield(child);
-    }
-
-    public void display() {
-        display0(root, "");
-    }
-
-    private void display0(Node node, String path) {
-        if (node.getChields().size() == 0) {
-            System.out.println(path + "-" + node);
-            return;
-        }
-
-        for (Node child: node.getChields()) {
-            display0(child, path + "-" + node);
+            deque.removeFirst();
+            visited[keyPointFrom] = true;
         }
     }
 }
